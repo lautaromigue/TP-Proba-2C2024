@@ -1,0 +1,70 @@
+#set.seed(91218)
+colores <- c("#75AADB", "white")
+
+# Punto 1a
+# Tomo 1000 valores de haber realizado una Exp(2)
+repeticion <- replicate(1000, rexp(2))
+hist(repeticion, col = colores, probability = TRUE, main = "Ejecución de 1000 VA iid de dist Exp(2)", ylab="", xlab= "")
+curve(dnorm(x), add = TRUE, col = "blue", lwd = 2)
+# Luego de la ejecución de las tres lineas anteriores, el histograma se asemeja al de una distribución exp
+
+# Punto b
+# Promedio 2 VA iid ejecutado 1000 veces
+repeticion <- replicate(1000, mean(rexp(2, 2)))
+hist(repeticion, col = colores, probability = TRUE, main = "Ejecución de 1000 VA iid de dist Exp(2)", ylab="", xlab= "")
+curve(dnorm(x), add = TRUE, col = "blue", lwd = 2)
+# El histograma resultante se asemeja a una dist exp pero que no es estrictamente decreciente (Los valores
+# entre 0.5 y 1 tienen más apariciones que aquellos entre 0 y 0.5)
+
+# Punto c
+# Promedio 5 VA iid ejecutando 1000 veces
+repeticion <- replicate(1000, (x <- mean(rexp(5, 2))))
+hist(repeticion, col = colores, probability = TRUE, main = "Ejecución de 1000 VA iid de dist Exp(2)", ylab="", xlab= "")
+curve(dnorm(x), add = TRUE, col = "blue", lwd = 2)
+# El histograma se sigue distorsionando de ser una exponencial y empieza a parecerse a una dist normal
+
+# Punto d
+# Promedio 30 VA iid ejecutando 1000 veces
+repeticion <- replicate(1000, (x <- mean(rexp(30, 2))))
+hist(repeticion, col = colores, probability = TRUE, main = "Ejecución de 1000 VA iid de dist Exp(2)", ylab="", xlab= "")
+curve(dnorm(x), add = TRUE, col = "blue", lwd = 2)
+# El histograma parece ser una distribución normal centrada en 0,5.
+
+# Punto e
+# Promedio 500 VA iid ejecutando 1000 veces
+repeticion <- replicate(1000, (x <- mean(rexp(500, 2))))
+boxplot(repeticion, col = colores, probability = TRUE, main = "Ejecución de 1000 VA iid de dist Exp(2)", ylab="", xlab= "")
+# El histograma parece ser una distribución normal centrada en 0,5.
+
+# Punto f
+# "data" contendrá los mismos experimentos realizados anteriormente, pero en un vector. Esto para cargarlo en un boxplot
+data <- data.frame(s1 = replicate(1000, (x <- mean(rexp(1, 2)))),
+                   s2 = replicate(1000, (x <- mean(rexp(2, 2)))),
+                   s5 = replicate(1000, (x <- mean(rexp(5, 2)))),
+                   s30 = replicate(1000, (x <- mean(rexp(30, 2)))),
+                   s500 = replicate(1000, (x <- mean(rexp(500, 2)))),
+                   s1200 = replicate(1000, (x <- mean(rexp(1200, 2))))
+)
+boxplot(data, col = colores, main = "Comparados")
+# A medida que se aumenta el tamaño de n (cantidad de VA promediadas) los valores tienden a concentrarse al rededor del 0,5.
+# Esto es de esperarse, puesto que por LGN, a mayor cantidad de experimentos, el promedio de estos tienen a la esperanza.
+# Dado que fundamentalmente estamos trabajando con distribución exponencial de lambda = 2, y su esperanza es 1/lambda, se cumple
+# con lo esperado.
+
+# Genero los datos equivalentes a los elementos del data.frame de arriba (linea 35)
+s1 <- replicate(1000, (x <- mean(rexp(1, 2))))
+s2 <- replicate(1000, (x <- mean(rexp(2, 2))))
+s5 <- replicate(1000, (x <- mean(rexp(5, 2))))
+s30 <- replicate(1000, (x <- mean(rexp(30, 2))))
+s500 <- replicate(1000, (x <- mean(rexp(500, 2))))
+s1200 <- replicate(1000, (x <- mean(rexp(1200, 2))))
+
+# Cada una de las siguientes lineas hace la comparación de los s1, s2, etc con una distribución normal
+qqnorm(s1, col = colores, main = "Experimentos")
+qqnorm(s2, col = colores, main = "Experimentos")
+qqnorm(s5, col = colores, main = "Experimentos")
+qqnorm(s30, col = colores, main = "Experimentos")
+qqnorm(s500, col = colores, main = "Experimentos")
+qqnorm(s1200, col = colores, main = "Experimentos")
+# Los resultados eran los esperables: A mayor n, mayor "linealidad" de la función dibujada. Es decir, los puntos graficados se
+# parecen más a los que se verían en una distribución normal
